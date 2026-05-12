@@ -195,7 +195,7 @@
 * search both legacy paths for v1 data during migration ([#48](https://github.com/mmmprod/claude-eta/issues/48)) ([b6c87c8](https://github.com/mmmprod/claude-eta/commit/b6c87c89869e6924b84e28a3d4f7676e57de913f))
 * ship compiled plugin runtime ([#13](https://github.com/mmmprod/claude-eta/issues/13)) ([ee9e2d9](https://github.com/mmmprod/claude-eta/commit/ee9e2d9cbb3004cabd886c5b7eadb68561258721))
 * **sql:** filter community baselines by record_unit ([#92](https://github.com/mmmprod/claude-eta/issues/92)) ([9252e1f](https://github.com/mmmprod/claude-eta/commit/9252e1f9b9a5f426a5bed42e4c445c27e5c463dc))
-* **supabase:** retry contribute upload on older schemas ([#NN](https://github.com/mmmprod/claude-eta/issues/NN)) ([403b1cb](https://github.com/mmmprod/claude-eta/commit/403b1cb7c1a99c3d59c68b3422821976fa5b43cc))
+* **supabase:** retry contribute upload on older schemas ([#100](https://github.com/MMMProd-Org/claude-eta/issues/100)) ([403b1cb](https://github.com/MMMProd-Org/claude-eta/commit/403b1cb7c1a99c3d59c68b3422821976fa5b43cc))
 
 
 ### Performance Improvements
