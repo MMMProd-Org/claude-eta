@@ -7,7 +7,7 @@ import * as os from 'node:os';
 let turnSeq = 0;
 
 // Point plugin data dir to a temp dir for isolation
-const TEST_ROOT = path.join(os.tmpdir(), `admin-export-test-${Date.now()}`);
+const TEST_ROOT = fs.mkdtempSync(path.join(os.tmpdir(), 'admin-export-test-'));
 process.env.CLAUDE_PLUGIN_DATA = TEST_ROOT;
 
 const { buildAdminExport, showAdminExport } = await import('../dist/cli/admin-export.js');

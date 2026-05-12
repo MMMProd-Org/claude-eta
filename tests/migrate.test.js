@@ -154,6 +154,7 @@ describe('migrateLegacyProject', () => {
     // Second call: needsMigration returns false, so migrateLegacyProject shouldn't double-write
     // But since migrateLegacyProject writes the marker, calling it again should still return 0
     // because the marker already exists. Let's check the actual behavior.
+    assert.equal(r2.migratedCount, 0);
 
     const turns = loadCompletedTurns('fp_idempotent_12');
     // Should still be exactly 1 turn, not 2

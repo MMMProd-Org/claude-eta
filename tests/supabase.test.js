@@ -190,8 +190,24 @@ describe('supabase', () => {
       assert.equal(calls[0].options.headers.Authorization, 'Bearer test-anon-key');
     });
 
-    it('returns data array on success', async () => {
-      const mockData = [{ task_type: 'other', median_seconds: 30 }];
+    it('returns validated data array on success', async () => {
+      const mockData = [
+        {
+          task_type: 'other',
+          project_loc_bucket: 'small',
+          model: 'claude-sonnet-4',
+          sample_count: 3,
+          median_seconds: 30,
+          p25_seconds: 20,
+          p75_seconds: 45,
+          p10_seconds: 10,
+          p90_seconds: 60,
+          avg_tool_calls: 4,
+          avg_files_edited: 2,
+          volatility: 'medium',
+          computed_at: '2026-01-01T00:00:00.000Z',
+        },
+      ];
       global.fetch = async () =>
         new Response(JSON.stringify(mockData), {
           status: 200,
