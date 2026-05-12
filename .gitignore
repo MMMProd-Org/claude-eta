@@ -25,6 +25,8 @@ _active.json
 ## Claude Code local state (personal, per-machine)
 .claude/
 .agents/
+.release-manager/state/
+.release-manager/*.lock
 
 ## Supabase local temp state
 supabase/.temp/
