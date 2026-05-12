@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.18](https://github.com/MMMProd-Org/claude-eta/compare/claude-eta-v1.3.17...claude-eta-v1.3.18) (2026-05-12)
+
+
+### Bug Fixes
+
+* **codeql:** resolve quality alerts ([#173](https://github.com/MMMProd-Org/claude-eta/issues/173)) ([284af7c](https://github.com/MMMProd-Org/claude-eta/commit/284af7cbeb94d6ebb89aa880944229f0f6c3f184))
+* **quality:** address ai findings ([#175](https://github.com/MMMProd-Org/claude-eta/issues/175)) ([5893144](https://github.com/MMMProd-Org/claude-eta/commit/5893144500ad028c0d3e6ed7bcbb3e93c1b4221b))
+
 ## [1.3.17](https://github.com/MMMProd-Org/claude-eta/compare/claude-eta-v1.3.16...claude-eta-v1.3.17) (2026-05-12)
 
 
