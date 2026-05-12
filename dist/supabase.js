@@ -65,88 +65,22 @@ export async function insertVelocityRecords(records) {
         return { data: null, error: err.message };
     }
 }
-function canonicalTaskType(value) {
-    switch (value) {
-        case 'bugfix':
-            return 'bugfix';
-        case 'feature':
-            return 'feature';
-        case 'refactor':
-            return 'refactor';
-        case 'config':
-            return 'config';
-        case 'docs':
-            return 'docs';
-        case 'test':
-            return 'test';
-        case 'debug':
-            return 'debug';
-        case 'review':
-            return 'review';
-        case 'other':
-            return 'other';
-        default:
-            return null;
-    }
-}
-function canonicalLocBucket(value) {
-    switch (value) {
-        case null:
-        case undefined:
-            return null;
-        case 'tiny':
-            return 'tiny';
-        case 'small':
-            return 'small';
-        case 'medium':
-            return 'medium';
-        case 'large':
-            return 'large';
-        case 'huge':
-            return 'huge';
-        default:
-            return null;
-    }
-}
-function canonicalVolatility(value) {
-    switch (value) {
-        case null:
-        case undefined:
-            return null;
-        case 'low':
-            return 'low';
-        case 'medium':
-            return 'medium';
-        case 'high':
-            return 'high';
-        default:
-            return null;
-    }
+const TASK_TYPES = ['bugfix', 'feature', 'refactor', 'config', 'docs', 'test', 'debug', 'review', 'other'];
+const LOC_BUCKETS = ['tiny', 'small', 'medium', 'large', 'huge'];
+const VOLATILITY_LEVELS = ['low', 'medium', 'high'];
+const MAX_BASELINE_SECONDS = 30 * 24 * 60 * 60;
+const MAX_SAMPLE_COUNT = 1_000_000;
+const MAX_AVERAGE_COUNT = 100_000;
+const MODEL_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:/+-]{0,99}$/;
+function optionalEnum(value, allowed) {
+    if (value === null || value === undefined)
+        return null;
+    return typeof value === 'string' && allowed.includes(value) ? value : null;
 }
 function canonicalModel(value) {
-    switch (value) {
-        case null:
-        case undefined:
-            return null;
-        case 'claude-sonnet-4':
-            return 'claude-sonnet-4';
-        case 'claude-sonnet-4-5':
-            return 'claude-sonnet-4-5';
-        case 'claude-opus-4':
-            return 'claude-opus-4';
-        case 'claude-opus-4-5':
-            return 'claude-opus-4-5';
-        case 'claude-opus-4-6':
-            return 'claude-opus-4-6';
-        case 'gpt-5':
-            return 'gpt-5';
-        case 'gpt-5.1':
-            return 'gpt-5.1';
-        case 'gpt-5.2':
-            return 'gpt-5.2';
-        default:
-            return null;
-    }
+    if (value === null || value === undefined)
+        return null;
+    return typeof value === 'string' && MODEL_PATTERN.test(value) ? value : null;
 }
 function finiteNumber(value, max) {
     if (typeof value !== 'number' || !Number.isFinite(value) || value < 0 || value > max)
@@ -176,13 +110,13 @@ function parseBaselineRecord(value) {
     if (!value || typeof value !== 'object' || Array.isArray(value))
         return null;
     const raw = value;
-    const taskType = canonicalTaskType(raw.task_type);
-    const sampleCount = finiteInteger(raw.sample_count, 1_000_000);
-    const medianSeconds = finiteNumber(raw.median_seconds, 30 * 24 * 60 * 60);
-    const p25Seconds = finiteNumber(raw.p25_seconds, 30 * 24 * 60 * 60);
-    const p75Seconds = finiteNumber(raw.p75_seconds, 30 * 24 * 60 * 60);
-    const p10Seconds = finiteNumber(raw.p10_seconds, 30 * 24 * 60 * 60);
-    const p90Seconds = finiteNumber(raw.p90_seconds, 30 * 24 * 60 * 60);
+    const taskType = optionalEnum(raw.task_type, TASK_TYPES);
+    const sampleCount = finiteInteger(raw.sample_count, MAX_SAMPLE_COUNT);
+    const medianSeconds = finiteNumber(raw.median_seconds, MAX_BASELINE_SECONDS);
+    const p25Seconds = finiteNumber(raw.p25_seconds, MAX_BASELINE_SECONDS);
+    const p75Seconds = finiteNumber(raw.p75_seconds, MAX_BASELINE_SECONDS);
+    const p10Seconds = finiteNumber(raw.p10_seconds, MAX_BASELINE_SECONDS);
+    const p90Seconds = finiteNumber(raw.p90_seconds, MAX_BASELINE_SECONDS);
     const computedAt = isoTimestamp(raw.computed_at);
     if (!taskType ||
         sampleCount === null ||
@@ -196,7 +130,7 @@ function parseBaselineRecord(value) {
     }
     return {
         task_type: taskType,
-        project_loc_bucket: canonicalLocBucket(raw.project_loc_bucket),
+        project_loc_bucket: optionalEnum(raw.project_loc_bucket, LOC_BUCKETS),
         model: canonicalModel(raw.model),
         sample_count: sampleCount,
         median_seconds: medianSeconds,
@@ -204,9 +138,9 @@ function parseBaselineRecord(value) {
         p75_seconds: p75Seconds,
         p10_seconds: p10Seconds,
         p90_seconds: p90Seconds,
-        avg_tool_calls: nullableFiniteNumber(raw.avg_tool_calls, 100_000),
-        avg_files_edited: nullableFiniteNumber(raw.avg_files_edited, 100_000),
-        volatility: canonicalVolatility(raw.volatility),
+        avg_tool_calls: nullableFiniteNumber(raw.avg_tool_calls, MAX_AVERAGE_COUNT),
+        avg_files_edited: nullableFiniteNumber(raw.avg_files_edited, MAX_AVERAGE_COUNT),
+        volatility: optionalEnum(raw.volatility, VOLATILITY_LEVELS),
         computed_at: computedAt,
     };
 }

@@ -6,6 +6,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as os from 'node:os';
+import * as crypto from 'node:crypto';
 const DATA_DIR = path.join(os.homedir(), '.claude', 'plugins', 'claude-eta', 'data');
 function slugify(name) {
     return name
@@ -154,12 +155,14 @@ export function setLastCompleted(info) {
 /** Read and delete in one shot. Discards stale files (e.g. from a crashed session). */
 export function consumeLastCompleted(maxAgeMs = 30 * 60 * 1000) {
     const p = getLastCompletedPath();
+    const claimedPath = `${p}.claimed.${process.pid}.${crypto.randomBytes(4).toString('hex')}`;
     let fd = null;
     try {
-        fd = fs.openSync(p, 'r');
+        fs.renameSync(p, claimedPath);
+        fd = fs.openSync(claimedPath, 'r');
         const mtime = fs.fstatSync(fd).mtimeMs;
         const data = JSON.parse(fs.readFileSync(fd, 'utf-8'));
-        fs.unlinkSync(p);
+        fs.unlinkSync(claimedPath);
         if (Date.now() - mtime > maxAgeMs)
             return null;
         return data;
@@ -175,6 +178,12 @@ export function consumeLastCompleted(maxAgeMs = 30 * 60 * 1000) {
             catch {
                 // Best-effort cleanup for legacy ephemeral state.
             }
+        }
+        try {
+            fs.unlinkSync(claimedPath);
+        }
+        catch {
+            // Already consumed or never claimed.
         }
     }
 }

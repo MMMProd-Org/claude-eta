@@ -195,7 +195,7 @@ describe('supabase', () => {
         {
           task_type: 'other',
           project_loc_bucket: 'small',
-          model: 'claude-sonnet-4',
+          model: 'future-model/2026.05+preview',
           sample_count: 3,
           median_seconds: 30,
           p25_seconds: 20,
@@ -216,6 +216,17 @@ describe('supabase', () => {
       const result = await fetchBaselines();
       assert.equal(result.error, null);
       assert.deepEqual(result.data, mockData);
+    });
+
+    it('returns error on invalid baseline shape', async () => {
+      global.fetch = async () =>
+        new Response(JSON.stringify([{ task_type: 'other', median_seconds: 30 }]), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      const result = await fetchBaselines();
+      assert.equal(result.error, 'Invalid baselines response');
+      assert.equal(result.data, null);
     });
 
     it('returns error on HTTP 500', async () => {
