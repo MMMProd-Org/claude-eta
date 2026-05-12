@@ -6,6 +6,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as os from 'node:os';
+import * as crypto from 'node:crypto';
 import type { ProjectData, TaskEntry, ActiveTask, LastCompleted, UserPreferences, LastEtaPrediction } from './types.js';
 
 const DATA_DIR = path.join(os.homedir(), '.claude', 'plugins', 'claude-eta', 'data');
@@ -172,12 +173,14 @@ export function setLastCompleted(info: LastCompleted): void {
 /** Read and delete in one shot. Discards stale files (e.g. from a crashed session). */
 export function consumeLastCompleted(maxAgeMs = 30 * 60 * 1000): LastCompleted | null {
   const p = getLastCompletedPath();
+  const claimedPath = `${p}.claimed.${process.pid}.${crypto.randomBytes(4).toString('hex')}`;
   let fd: number | null = null;
   try {
-    fd = fs.openSync(p, 'r');
+    fs.renameSync(p, claimedPath);
+    fd = fs.openSync(claimedPath, 'r');
     const mtime = fs.fstatSync(fd).mtimeMs;
     const data = JSON.parse(fs.readFileSync(fd, 'utf-8')) as LastCompleted;
-    fs.unlinkSync(p);
+    fs.unlinkSync(claimedPath);
     if (Date.now() - mtime > maxAgeMs) return null;
     return data;
   } catch {
@@ -189,6 +192,11 @@ export function consumeLastCompleted(maxAgeMs = 30 * 60 * 1000): LastCompleted |
       } catch {
         // Best-effort cleanup for legacy ephemeral state.
       }
+    }
+    try {
+      fs.unlinkSync(claimedPath);
+    } catch {
+      // Already consumed or never claimed.
     }
   }
 }

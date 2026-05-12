@@ -16,6 +16,8 @@ import {
   loadPreferences,
   setLastEta,
   consumeLastEta,
+  setLastCompleted,
+  consumeLastCompleted,
 } from '../dist/store.js';
 
 const DATA_DIR = path.join(os.homedir(), '.claude', 'plugins', 'claude-eta', 'data');
@@ -31,9 +33,16 @@ function testProjectPath() {
 function cleanup() {
   const p = testProjectPath();
   if (fs.existsSync(p)) fs.unlinkSync(p);
-  for (const f of ['_active.json', '_preferences.json', '_last_eta.json']) {
+  for (const f of ['_active.json', '_preferences.json', '_last_eta.json', '_last_completed.json']) {
     const fp = path.join(DATA_DIR, f);
     if (fs.existsSync(fp)) fs.unlinkSync(fp);
+  }
+  try {
+    for (const f of fs.readdirSync(DATA_DIR)) {
+      if (f.startsWith('_last_completed.json.claimed.')) fs.unlinkSync(path.join(DATA_DIR, f));
+    }
+  } catch {
+    // Directory may not exist yet.
   }
 }
 
@@ -193,6 +202,22 @@ describe('lastEta', () => {
 
   it('consumeLastEta returns null when file missing', () => {
     assert.equal(consumeLastEta(), null);
+  });
+});
+
+describe('lastCompleted', () => {
+  beforeEach(() => cleanup());
+  afterEach(() => cleanup());
+
+  it('consumeLastCompleted reads and deletes via claimed file', () => {
+    const completed = { task_id: 'task-1', classification: 'bugfix', duration_seconds: 42 };
+    setLastCompleted(completed);
+
+    const result = consumeLastCompleted();
+
+    assert.deepEqual(result, completed);
+    assert.equal(consumeLastCompleted(), null);
+    assert.ok(!fs.existsSync(path.join(DATA_DIR, '_last_completed.json')));
   });
 });
 
