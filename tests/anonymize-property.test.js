@@ -30,11 +30,13 @@ describe('anonymize property checks', () => {
   });
 
   it('normalizeModel removes only trailing metadata suffixes', () => {
+    const bracketSuffixArbitrary = fc.stringMatching(/^[^\]\r\n]{0,20}$/);
+
     fc.assert(
       fc.property(
         fc.stringMatching(/^[a-z][a-z0-9.-]{0,40}$/),
         fc.integer({ min: 20200101, max: 20991231 }),
-        fc.string({ maxLength: 20 }),
+        bracketSuffixArbitrary,
         (base, dateSuffix, bracketSuffix) => {
           assert.equal(normalizeModel(`${base}-${dateSuffix}`), base);
           assert.equal(normalizeModel(`${base}[${bracketSuffix}]`), base);
