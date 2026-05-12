@@ -1,19 +1,19 @@
 -- =============================================================
--- claude-eta — fix refresh_baselines() DELETE without WHERE
+-- claude-eta — fix refresh_baselines() safeupdate failure
 --
 -- Supabase enables pg_safeupdate which blocks DELETE statements
 -- that lack a WHERE clause, causing the function to fail with:
 --   "DELETE requires a WHERE clause"
 --
--- The intent is to clear baselines_cache before recomputing it,
--- so TRUNCATE is the correct primitive: atomic, faster, and not
--- affected by safeupdate.
+-- The intent is to clear baselines_cache before recomputing it.
+-- Use an explicit WHERE predicate so pg_safeupdate allows the
+-- statement while preserving MVCC reads during the refresh.
 -- =============================================================
 
 create or replace function public.refresh_baselines()
 returns void as $$
 begin
-  truncate table public.baselines_cache;
+  delete from public.baselines_cache where true;
 
   with recent as (
     select *
@@ -168,3 +168,6 @@ begin
   having count(*) >= 5;
 end;
 $$ language plpgsql security definer;
+
+revoke all on function public.refresh_baselines() from public;
+grant execute on function public.refresh_baselines() to service_role;
