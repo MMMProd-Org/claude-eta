@@ -15,12 +15,12 @@
 
 * refresh baselines safeupdate failure ([ea9252d](https://github.com/MMMProd-Org/claude-eta/commit/ea9252daff19698eae9daa5ebec1d56e01e3280b))
 
-## [1.3.16](https://github.com/mmmprod/claude-eta/compare/claude-eta-v1.3.15...claude-eta-v1.3.16) (2026-04-19)
+## [1.3.16](https://github.com/MMMProd-Org/claude-eta/compare/claude-eta-v1.3.15...claude-eta-v1.3.16) (2026-04-19)
 
 
 ### Bug Fixes
 
-* **ci:** surface refresh-baselines HTTP error body and status code ([#161](https://github.com/mmmprod/claude-eta/issues/161)) ([e0f886e](https://github.com/mmmprod/claude-eta/commit/e0f886e6d3a8108c2a9816f3fa868a2ff4524877))
+* **ci:** surface refresh-baselines HTTP error body and status code ([#161](https://github.com/MMMProd-Org/claude-eta/issues/161)) ([e0f886e](https://github.com/MMMProd-Org/claude-eta/commit/e0f886e6d3a8108c2a9816f3fa868a2ff4524877))
 
 ## [1.3.15](https://github.com/mmmprod/claude-eta/compare/claude-eta-v1.3.14...claude-eta-v1.3.15) (2026-04-12)
 
@@ -195,7 +195,7 @@
 * search both legacy paths for v1 data during migration ([#48](https://github.com/mmmprod/claude-eta/issues/48)) ([b6c87c8](https://github.com/mmmprod/claude-eta/commit/b6c87c89869e6924b84e28a3d4f7676e57de913f))
 * ship compiled plugin runtime ([#13](https://github.com/mmmprod/claude-eta/issues/13)) ([ee9e2d9](https://github.com/mmmprod/claude-eta/commit/ee9e2d9cbb3004cabd886c5b7eadb68561258721))
 * **sql:** filter community baselines by record_unit ([#92](https://github.com/mmmprod/claude-eta/issues/92)) ([9252e1f](https://github.com/mmmprod/claude-eta/commit/9252e1f9b9a5f426a5bed42e4c445c27e5c463dc))
-* **supabase:** retry contribute upload on older schemas ([403b1cb](https://github.com/mmmprod/claude-eta/commit/403b1cb7c1a99c3d59c68b3422821976fa5b43cc))
+* **supabase:** retry contribute upload on older schemas ([#NN](https://github.com/mmmprod/claude-eta/issues/NN)) ([403b1cb](https://github.com/mmmprod/claude-eta/commit/403b1cb7c1a99c3d59c68b3422821976fa5b43cc))
 
 
 ### Performance Improvements
