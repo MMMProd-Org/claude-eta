@@ -172,14 +172,24 @@ export function setLastCompleted(info: LastCompleted): void {
 /** Read and delete in one shot. Discards stale files (e.g. from a crashed session). */
 export function consumeLastCompleted(maxAgeMs = 30 * 60 * 1000): LastCompleted | null {
   const p = getLastCompletedPath();
+  let fd: number | null = null;
   try {
-    const mtime = fs.statSync(p).mtimeMs;
-    const data = JSON.parse(fs.readFileSync(p, 'utf-8')) as LastCompleted;
+    fd = fs.openSync(p, 'r');
+    const mtime = fs.fstatSync(fd).mtimeMs;
+    const data = JSON.parse(fs.readFileSync(fd, 'utf-8')) as LastCompleted;
     fs.unlinkSync(p);
     if (Date.now() - mtime > maxAgeMs) return null;
     return data;
   } catch {
     return null;
+  } finally {
+    if (fd !== null) {
+      try {
+        fs.closeSync(fd);
+      } catch {
+        // Best-effort cleanup for legacy ephemeral state.
+      }
+    }
   }
 }
 

@@ -250,12 +250,11 @@ describe('Subagent full lifecycle', () => {
       cwd: TEST_CWD,
     });
 
-    // Verify active turn exists
+    // Verify active turn exists by reading the file we need for the next step.
     const activePath = path.join(TEST_DATA_DIR, 'projects', fp, 'active', `${SESSION_ID}__${AGENT_ID}.json`);
-    assert.ok(fs.existsSync(activePath), 'active turn should exist after start');
+    const state = JSON.parse(fs.readFileSync(activePath, 'utf-8'));
 
     // Step 2: Simulate tool use by modifying active file directly
-    const state = JSON.parse(fs.readFileSync(activePath, 'utf-8'));
     state.tool_calls = 5;
     state.files_read = 3;
     state.files_edited = 1;

@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { estimateInitial, estimateWithTrace, toRemainingTaskEstimate, toTaskEstimate } from '../dist/estimator.js';
-import { applyPhaseTransition, extractFeatures, detectPhase, recomputeRemaining } from '../dist/features.js';
+import { applyPhaseTransition, detectPhase, recomputeRemaining } from '../dist/features.js';
 import { INITIAL_PRIORS } from '../dist/stats.js';
 
 function makeStats(clsName, clsCount, volatility = 'medium', overrides = {}) {
