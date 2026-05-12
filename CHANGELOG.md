@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.17](https://github.com/MMMProd-Org/claude-eta/compare/claude-eta-v1.3.16...claude-eta-v1.3.17) (2026-05-12)
+
+
+### Bug Fixes
+
+* refresh baselines safeupdate failure ([ea9252d](https://github.com/MMMProd-Org/claude-eta/commit/ea9252daff19698eae9daa5ebec1d56e01e3280b))
+
 ## [1.3.16](https://github.com/mmmprod/claude-eta/compare/claude-eta-v1.3.15...claude-eta-v1.3.16) (2026-04-19)
 
 
