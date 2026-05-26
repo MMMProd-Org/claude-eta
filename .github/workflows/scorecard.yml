@@ -38,7 +38,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           results_file: results.sarif
           results_format: sarif
-          publish_results: true
+          publish_results: false
 
       # CodeQL uploads the real SAST results. Scorecard's SAST meta-check is
       # noisy for multi-commit pushes because checks attach to the head commit.
