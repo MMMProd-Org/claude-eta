@@ -1,6 +1,8 @@
 name: OpenSSF Scorecard
 
 on:
+  # Scorecard needs to run after CodeQL so its SAST check sees the
+  # completed CodeQL analysis before uploading SARIF to code scanning.
   workflow_run:
     workflows: ["CodeQL"]
     types: [completed]
@@ -24,6 +26,8 @@ jobs:
       actions: read
 
     steps:
+      # Keep the default-branch checkout. Explicit workflow_run head SHA
+      # checkouts are reported by Scorecard as Dangerous-Workflow findings.
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
