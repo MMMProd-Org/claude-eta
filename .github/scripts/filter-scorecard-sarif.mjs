@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import { readFileSync, writeFileSync } from "node:fs";
 
-const [file = "results.sarif"] = process.argv.slice(2);
-const sarif = JSON.parse(readFileSync(file, "utf8"));
+const [inputFile = "results.sarif", outputFile = inputFile] = process.argv.slice(2);
+const sarif = JSON.parse(readFileSync(inputFile, "utf8"));
 
 for (const run of sarif.runs ?? []) {
   if (!Array.isArray(run.results)) {
@@ -12,4 +12,4 @@ for (const run of sarif.runs ?? []) {
   run.results = run.results.filter((result) => result.ruleId !== "SASTID");
 }
 
-writeFileSync(file, `${JSON.stringify(sarif)}\n`);
+writeFileSync(outputFile, `${JSON.stringify(sarif)}\n`);
