@@ -1,7 +1,9 @@
 name: Refresh community baselines
 on:
   schedule:
-    - cron: '0 */6 * * *'
+    # Keep scheduled check-runs sparse so Scorecard can still see CodeQL
+    # check-runs on quiet commits when evaluating SAST coverage.
+    - cron: '37 2 * * 1'
   workflow_dispatch: {}
 
 permissions:
